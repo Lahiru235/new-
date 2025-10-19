@@ -1,0 +1,38 @@
+USE FOT_SMS_G4;
+
+CREATE TABLE attendance(
+	attendance_id INT AUTO_INCREMENT PRIMARY KEY,
+ 	stu_id CHAR(6) NOT NULL,
+	course_id VARCHAR(7) NOT NULL,
+	session TINYINT NOT NULL,
+	session_type ENUM('theory','practical') NOT NULL,
+	status ENUM('p','ab'),
+	date DATE NOT NULL,
+	FOREIGN KEY(stu_id) REFERENCES student(stu_id),
+	FOREIGN KEY(course_id) REFERENCES course(course_id),
+	CONSTRAINT valid_session_number CHECK(session BETWEEN 1 AND 15)
+);
+
+CREATE TABLE medical(
+	medical_id VARCHAR(6) PRIMARY KEY,
+	approval ENUM('APPROVED','NOT APPROVED') NOT NULL,
+	date DATE NOT NULL,
+	stu_id CHAR(6) NOT NULL,
+	attendance_id INT NOT NULL,
+	FOREIGN KEY(stu_id) REFERENCES student(stu_id),
+	FOREIGN KEY(attendance_id) REFERENCES attendance(attendance_id)	
+);
+
+CREATE TABLE exam_marks(
+	exam_id CHAR(6) PRIMARY KEY,
+	course_id VARCHAR(7) NOT NULL,
+	stu_id CHAR(6) NOT NULL,
+	lec_id CHAR(4) NOT NULL,
+	session_type ENUM('theory','practical') NOT NULL,
+	assesment_type ENUM('quiz','assesment','mid','final') NOT NULL,
+	marks TINYINT NOT NULL,
+	FOREIGN KEY(stu_id) REFERENCES student(stu_id),
+	FOREIGN KEY(course_id) REFERENCES course(course_id),
+	FOREIGN KEY(lec_id) REFERENCES lecture(lec_id),
+	CONSTRAINT valid_marks_check CHECK(marks BETWEEN 0 AND 100)
+);
